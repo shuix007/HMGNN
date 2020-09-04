@@ -44,12 +44,12 @@ class HoConv(nn.Module):
         # interaction residual layers
         self.interaction_residual_layer = nn.ModuleList()
         for i in range(n_interaction_residual):
-            self.interaction_residual_layer.append(ResLayer(node_type, hidden_dim, hidden_dim, hidden_dim, activation))
+            self.interaction_residual_layer.append(ResLayer(hidden_dim, hidden_dim, hidden_dim, activation))
         
         # atom residual layers
         self.atom_residual_layer = nn.ModuleList()
         for i in range(n_atom_residual):
-            self.atom_residual_layer.append(ResLayer(node_type, hidden_dim, hidden_dim, hidden_dim, activation))
+            self.atom_residual_layer.append(ResLayer(hidden_dim, hidden_dim, hidden_dim, activation))
         
         self.reset_parameters()
         
@@ -94,7 +94,7 @@ class HoConv(nn.Module):
         
         # interaction residuals
         for layer in self.interaction_residual_layer:
-            m = layer(graph, m)
+            m = layer(m)
         
         if self.residual:
             h_domestic = h_domestic + m
@@ -103,6 +103,6 @@ class HoConv(nn.Module):
         
         # atom residuals
         for layer in self.atom_residual_layer:
-            h_domestic = layer(graph, h_domestic)
+            h_domestic = layer(h_domestic)
         
         return h_domestic

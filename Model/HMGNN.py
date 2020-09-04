@@ -104,7 +104,7 @@ class OutputModule(nn.Module):
         # output layer which output the final prediction value (for regression)
         self.node_out_residual = nn.ModuleList()
         for _ in range(num_node_out_residuals):
-            self.node_out_residual.append(ResLayer(node_type, hidden_dim, hidden_dim, hidden_dim, activation))
+            self.node_out_residual.append(ResLayer(hidden_dim, hidden_dim, hidden_dim, activation))
         self.node_out_layer = nn.Linear(hidden_dim, 1, bias=True)
         
         # scale layer (Important for scaling the output)

@@ -28,10 +28,8 @@ class DenseLayer(nn.Module):
         return self.activation(self.fc(input_feat))
 
 class ResLayer(nn.Module):
-    def __init__(self, node_type, in_dim, hidden_dim, out_dim, activation):
-        super(ResLayer, self).__init__()
-        self.node_type = node_type
-        
+    def __init__(self, in_dim, hidden_dim, out_dim, activation):
+        super(ResLayer, self).__init__()        
         self.in_dim = in_dim
         self.hidden_dim = hidden_dim
         self.out_dim = out_dim
@@ -39,9 +37,6 @@ class ResLayer(nn.Module):
         
         self.fc1 = nn.Linear(in_dim, hidden_dim, bias=True)
         self.fc2 = nn.Linear(hidden_dim, out_dim, bias=True)
-        
-        self.gn1 = HeteroGraphNorm(hidden_dim)
-        self.gn2 = HeteroGraphNorm(out_dim)
         
         if in_dim != out_dim:
             self.res_fc = nn.Linear(in_dim, out_dim, bias=False)
@@ -57,14 +52,12 @@ class ResLayer(nn.Module):
         if self.in_dim != self.out_dim:
             GlorotOrthogonal(self.res_fc.weight)
         
-    def forward(self, batch_g, feat):
+    def forward(self, feat):
         identity = feat
         
         out = self.fc1(feat)
-        out = self.gn1(batch_g, out, self.node_type)
         out = self.activation(out)
         out = self.fc2(out)
-        out = self.gn1(batch_g, out, self.node_type)
         out = self.activation(out)
         
         if self.in_dim == self.out_dim:
