@@ -17,7 +17,7 @@ import dgl
 import dgl.backend as bknd
 
 from .dgl_layers import HoConv
-from .torch_layers import ResLayer, DenseLayer, DistRBF, AngleRBF, ShrinkDistRBF, RBF, GlorotOrthogonal
+from .torch_layers import ResLayer, DenseLayer, DistRBF, AngleRBF, ShrinkDistRBF, GlorotOrthogonal
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -40,8 +40,7 @@ class DistGraphInputModule(nn.Module):
         self.node_input_layer = DenseLayer(hidden_dim, hidden_dim, activation, bias=True)
         
         # radial basis function to convert edge distance to continuous feature
-        # self.edge_rbf = ShrinkDistRBF(edge_continuous_dim, cut_r)
-        self.edge_rbf = RBF(edge_continuous_dim, 0, cut_r)
+        self.edge_rbf = ShrinkDistRBF(edge_continuous_dim, cut_r)
         
         self.edge_input_layer = DenseLayer(edge_continuous_dim, hidden_dim, activation, bias=True)
         
@@ -67,14 +66,12 @@ class LineGraphInputModule(nn.Module):
         self.node_embedding_layer = nn.Embedding(node_type_universe, hidden_dim)
         
         # radial basis function to convert body distance to continuous feature
-        # self.node_rbf = DistRBF(node_continuous_dim, cut_r)
-        self.node_rbf = RBF(node_continuous_dim, 0, cut_r)
+        self.node_rbf = DistRBF(node_continuous_dim, cut_r)
         
         self.node_input_layer = DenseLayer(hidden_dim + node_continuous_dim, hidden_dim, activation, bias=True)
         
         # radial basis function to convert edge distance to continuous feature
-        # self.edge_rbf = AngleRBF(edge_continuous_dim)
-        self.edge_rbf = RBF(edge_continuous_dim, 0, math.pi)
+        self.edge_rbf = AngleRBF(edge_continuous_dim)
         
         self.edge_input_layer = DenseLayer(edge_continuous_dim, hidden_dim, activation, bias=True)
         
@@ -97,14 +94,12 @@ class LineGraphInputModule(nn.Module):
         return h, eh
 
 class OutputModule(nn.Module):
-    def __init__(self, node_type, node_type_universe, num_node_out_residuals, hidden_dim, activation, mean, std):
+    def __init__(self, node_type, node_type_universe, hidden_dim, activation, mean, std):
         super(OutputModule, self).__init__()
         self.domestic_node_type = node_type
         
         # output layer which output the final prediction value (for regression)
         self.node_out_residual = nn.ModuleList()
-        for _ in range(num_node_out_residuals):
-            self.node_out_residual.append(ResLayer(hidden_dim, hidden_dim, hidden_dim, activation))
         self.node_out_layer = nn.Linear(hidden_dim, 1, bias=True)
         
         # scale layer (Important for scaling the output)
@@ -171,8 +166,6 @@ class HMGNN(nn.Module):
                  lg_num_interaction_residuals,
                  dg_num_residuals,
                  lg_num_residuals,
-                 dg_num_out_residuals,
-                 lg_num_out_residuals,
                  rbf_dim,
                  cut_r,
                  dg_mean,
@@ -214,8 +207,8 @@ class HMGNN(nn.Module):
                         feat_drop)
                     )
             
-        self.dg_output_module = OutputModule('atom', dg_node_type_universe, dg_num_out_residuals, hidden_dim, activation, dg_mean, dg_std)
-        self.lg_output_module = OutputModule('bond', lg_node_type_universe, lg_num_out_residuals, hidden_dim, activation, lg_mean, lg_std)
+        self.dg_output_module = OutputModule('atom', dg_node_type_universe, hidden_dim, activation, dg_mean, dg_std)
+        self.lg_output_module = OutputModule('bond', lg_node_type_universe, hidden_dim, activation, lg_mean, lg_std)
             
         self.fussion_layer = FussionModule(2, hidden_dim, activation)
         
