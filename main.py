@@ -144,14 +144,10 @@ if __name__ == '__main__':
                         help='number of elements per batch.')
     parser.add_argument('--train', type=int, default=0,
                         help='validation or model training.')
-    parser.add_argument("--num_node_out_residual", type=int, default=1,
+    parser.add_argument("--num_interaction_residual", type=int, default=1,
                         help="number of residual layers for node output")
-    parser.add_argument("--num_node_interaction_residual", type=int, default=3,
+    parser.add_argument("--num_atom_residual", type=int, default=1,
                         help="number of residual layers for node output")
-    parser.add_argument("--num_node_atom_residual", type=int, default=2,
-                        help="number of residual layers for node output")
-    parser.add_argument("--num_body_out_residual2", type=int, default=1,
-                        help="number of residual layers for 2 bodies output")
     parser.add_argument("--num_convs", type=int, default=5,
                         help="number of convolution layers")
     parser.add_argument("--hidden_dim", type=int, default=128,
@@ -162,7 +158,7 @@ if __name__ == '__main__':
                         help="use residual connection")
     parser.add_argument("--feat_drop", type=float, default=.0,
                         help="input feature dropout")
-    parser.add_argument("--lr", type=float, default=0.0005,
+    parser.add_argument("--lr", type=float, default=0.001,
                         help="learning rate.")
     parser.add_argument("--lr_decrease_rate", type=float, default=0.1,
                         help="learning rate decreasing rate.")
@@ -195,12 +191,10 @@ if __name__ == '__main__':
         model = HMGNN(num_convs = args.num_convs,
                       dg_node_type_universe = trn_data.dg_node_type_universe,
                       lg_node_type_universe = trn_data.lg_node_type_universe,
-                      dg_num_interaction_residuals = 1,
-                      lg_num_interaction_residuals = 1,
-                      dg_num_residuals = 1,
-                      lg_num_residuals = 1,
-                      dg_num_out_residuals = 1,
-                      lg_num_out_residuals = 1,
+                      dg_num_interaction_residuals = args.num_interaction_residual,
+                      lg_num_interaction_residuals = args.num_interaction_residual,
+                      dg_num_residuals = args.num_atom_residual,
+                      lg_num_residuals = args.num_atom_residual,
                       rbf_dim = int(args.hidden_dim/2),
                       cut_r = args.cut_r,
                       dg_mean = dg_mean,
