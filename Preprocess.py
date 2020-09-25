@@ -58,11 +58,11 @@ if __name__ == '__main__':
                         help='filename of evil molecules.')
     parser.add_argument('--split_filename', type=str, default='No',
                         help='filename of evil molecules.')
-    parser.add_argument('--train_num', type=int, default=110831,
+    parser.add_argument('--train_num', type=int, default=110000,
                         help='number of training instances.')
     parser.add_argument('--val_num', type=int, default=10000,
                         help='number of validation instances.')
-    parser.add_argument('--test_num', type=int, default=10000,
+    parser.add_argument('--test_num', type=int, default=10831,
                         help='number of test instances.')
     parser.add_argument('--save_mol_index', type=int, default=1,
                         help='Save index of train, val, test.')

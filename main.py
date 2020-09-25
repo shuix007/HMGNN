@@ -136,16 +136,16 @@ def trainIter(model,
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', type=str, default='Data/N_50000_cut_5_seed_1/',
+    parser.add_argument('--data_dir', type=str, default='Data/N_50000_cut_5._seed_1/',
                         help='directory to the data.')
     parser.add_argument('--prpty', type=str, default='U0',
                         help='the property to be trained on.')
     parser.add_argument('--batch_size', type=int, default=32,
                         help='number of elements per batch.')
-    parser.add_argument('--train', type=int, default=0,
+    parser.add_argument('--train', type=int, default=1,
                         help='validation or model training.')
     parser.add_argument("--num_interaction_residual", type=int, default=1,
-                        help="number of residual layers for node output")
+                        help="number of residual layers for message output")
     parser.add_argument("--num_atom_residual", type=int, default=1,
                         help="number of residual layers for node output")
     parser.add_argument("--num_convs", type=int, default=5,
@@ -164,7 +164,7 @@ if __name__ == '__main__':
                         help="learning rate decreasing rate.")
     parser.add_argument("--decrease_steps", type=int, default=2000000,
                         help="steps to decrease the learning rate.")
-    parser.add_argument('--weight_decay', type=float, default=0.,
+    parser.add_argument('--weight_decay', type=float, default=1e-6,
                         help="weight decay")
     parser.add_argument('--cut_r', type=float, default=5.,
                         help="cut radius to build graphs")
@@ -195,7 +195,7 @@ if __name__ == '__main__':
                       lg_num_interaction_residuals = args.num_interaction_residual,
                       dg_num_residuals = args.num_atom_residual,
                       lg_num_residuals = args.num_atom_residual,
-                      rbf_dim = int(args.hidden_dim/2),
+                      rbf_dim = args.edge_feat_dim,
                       cut_r = args.cut_r,
                       dg_mean = dg_mean,
                       lg_mean = lg_mean,
