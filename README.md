@@ -4,6 +4,7 @@ This is an implementation of the Heterogeneous Molecular Graph Neural Network (H
 
 **[Heterogeneous Molecular Graph Neural Networks for Predicting Molecule Properties](https://arxiv.org/abs/2009.12710)**   
 by Zeren Shui, George Karypis
+
 To appear in ICDM 2020.
 
 ## Requirement
@@ -32,7 +33,7 @@ To train a HMGNN model to predict U0 (other available properties are mu, alpha, 
 ```
 python3 main.py --data_dir=[target directory] --train=1 --model_dir=[model directory] --prpty=U0 --cut_r=3.
 ```
-Training a HMGNN model on a GPU(RTX 2070/RTX 2080/Titan V100) will cost around 3~4 days.
+Training a HMGNN model on a GPU (RTX 2070/RTX 2080/Titan V100) will cost around 3~4 days.
 
 To test the trained model, run
 ```
