@@ -26,7 +26,7 @@ To run the preprocessing script you will need to download and unzip the 130k .xy
 ```
 python3 Preprocess.py --DATADIR=[raw data directory] --target_dir=[target directory] --evil_filename=uncharacterized.txt --cut_r=3.
 ```
-where "uncharacterized.txt" contains the list of 3054 molecules which failed the geometry consistency check, cut_r is cut off distance. This file is also available on the QM9 website.
+where "uncharacterized.txt" contains the list of 3054 molecules which failed the geometry consistency check. This file is also available on the QM9 website.
 
 To train a HMGNN model to predict U0 (other available properties are mu, alpha, homo, lumo, gap, r2, zpve, U0, U, H, G, Cv), run
 ```
