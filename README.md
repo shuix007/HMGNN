@@ -18,7 +18,6 @@ numpy
 scipy>=1.4
 pytorch>=1.4
 dgl=0.4.3
-
 ```
 
 ## How to run
